@@ -89,6 +89,16 @@ export default function Home() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          {tasks.length > 0 && (
+            <div className="flex items-center gap-2 text-xs">
+              <span className="px-2 py-1 rounded-md bg-zinc-800/60 border border-[var(--border)] text-zinc-400">
+                {tasks.filter((t) => !t.completed).length} active
+              </span>
+              <span className="px-2 py-1 rounded-md bg-[var(--success)]/10 border border-[var(--success)]/20 text-[var(--success)]">
+                {tasks.filter((t) => t.completed).length} done
+              </span>
+            </div>
+          )}
           {stepCount > 0 && (
             <span className="text-xs text-zinc-500">
               {stepCount} agent step{stepCount === 1 ? "" : "s"}
