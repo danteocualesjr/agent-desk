@@ -3,9 +3,15 @@
 import type { Task } from "@/lib/types";
 
 const priorityColors = {
-  low: "text-zinc-400 bg-zinc-400/10",
-  medium: "text-yellow-400 bg-yellow-400/10",
-  high: "text-red-400 bg-red-400/10",
+  low: "text-zinc-400 bg-zinc-400/10 border-zinc-400/20",
+  medium: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
+  high: "text-red-400 bg-red-400/10 border-red-400/20",
+};
+
+const priorityIcons = {
+  low: "↓",
+  medium: "→",
+  high: "↑",
 };
 
 export default function TaskBoard({ tasks }: { tasks: Task[] }) {
