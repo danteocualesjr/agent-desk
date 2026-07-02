@@ -111,7 +111,7 @@ export default function ChatPanel({
 
       <form
         onSubmit={handleSubmit}
-        className="p-4 border-t border-[var(--border)]"
+        className="p-4 border-t border-[var(--border)] bg-[var(--panel)]/40"
       >
         <div className="flex gap-2">
           <input
@@ -120,16 +120,22 @@ export default function ChatPanel({
             onChange={(e) => setInput(e.target.value)}
             placeholder="Tell the agent what to do..."
             disabled={loading}
-            className="flex-1 bg-[var(--panel)] border border-[var(--border)] rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-[var(--accent)] disabled:opacity-50"
+            className="flex-1 bg-[var(--panel)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 transition-all disabled:opacity-50"
           />
           <button
             type="submit"
             disabled={loading || !input.trim()}
-            className="px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent-dim)] text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center w-10 h-10 bg-[var(--accent)] hover:bg-[var(--accent-dim)] text-white rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
+            aria-label="Send message"
           >
-            Send
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
           </button>
         </div>
+        <p className="text-[10px] text-zinc-600 mt-2 text-center">
+          Press Enter to send
+        </p>
       </form>
     </div>
   );
