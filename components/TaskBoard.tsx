@@ -65,7 +65,7 @@ export default function TaskBoard({ tasks }: { tasks: Task[] }) {
 function TaskCard({ task }: { task: Task }) {
   return (
     <li
-      className={`rounded-lg border border-[var(--border)] bg-[var(--panel)] p-3 animate-fade-in ${
+      className={`group rounded-lg border border-[var(--border)] bg-[var(--panel)] p-3 animate-fade-in transition-all duration-200 hover:border-[var(--accent)]/30 hover:shadow-lg hover:shadow-[var(--accent)]/5 ${
         task.completed ? "opacity-60" : ""
       }`}
     >
@@ -92,10 +92,11 @@ function TaskCard({ task }: { task: Task }) {
           )}
           <div className="flex items-center gap-2 mt-1.5">
             <span
-              className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
+              className={`inline-flex items-center gap-0.5 text-[10px] font-medium px-1.5 py-0.5 rounded border ${
                 priorityColors[task.priority]
               }`}
             >
+              <span>{priorityIcons[task.priority]}</span>
               {task.priority}
             </span>
             <span className="text-[10px] text-zinc-600">#{task.id}</span>

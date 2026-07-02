@@ -60,15 +60,24 @@ export default function ChatPanel({
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`animate-fade-in ${
-              msg.role === "user" ? "flex justify-end" : ""
+            className={`animate-fade-in flex gap-2 ${
+              msg.role === "user" ? "flex-row-reverse" : "flex-row"
             }`}
           >
             <div
-              className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
+              className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold ${
                 msg.role === "user"
                   ? "bg-[var(--accent)] text-white"
-                  : "bg-[var(--panel)] border border-[var(--border)]"
+                  : "bg-zinc-800 text-zinc-400 border border-[var(--border)]"
+              }`}
+            >
+              {msg.role === "user" ? "You" : "AI"}
+            </div>
+            <div
+              className={`max-w-[75%] rounded-xl px-3.5 py-2.5 text-sm ${
+                msg.role === "user"
+                  ? "bg-[var(--accent)] text-white rounded-tr-sm"
+                  : "bg-[var(--panel)] border border-[var(--border)] rounded-tl-sm"
               }`}
             >
               {msg.content}
