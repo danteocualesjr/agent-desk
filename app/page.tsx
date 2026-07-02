@@ -108,9 +108,15 @@ export default function Home() {
       )}
 
       <main className="flex-1 grid grid-cols-3 divide-x divide-[var(--border)] overflow-hidden">
-        <TaskBoard tasks={tasks} />
-        <ChatPanel messages={messages} onSend={handleSend} loading={loading} />
-        <AgentTrace trace={trace} />
+        <div className="bg-[var(--panel)]/30">
+          <TaskBoard tasks={tasks} />
+        </div>
+        <div className="bg-[var(--background)]">
+          <ChatPanel messages={messages} onSend={handleSend} loading={loading} />
+        </div>
+        <div className="bg-[var(--panel)]/30">
+          <AgentTrace trace={trace} />
+        </div>
       </main>
     </div>
   );
