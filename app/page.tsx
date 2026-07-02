@@ -131,6 +131,23 @@ export default function Home() {
           <AgentTrace trace={trace} />
         </div>
       </main>
+
+      <footer className="flex items-center justify-between px-6 py-2 border-t border-[var(--border)] bg-[var(--panel)]/40 text-[10px] text-zinc-600">
+        <span>Agent Desk v0.1</span>
+        <span className="flex items-center gap-1.5">
+          {loading ? (
+            <>
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+              Agent working...
+            </>
+          ) : (
+            <>
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)]" />
+              Ready
+            </>
+          )}
+        </span>
+      </footer>
     </div>
   );
 }
