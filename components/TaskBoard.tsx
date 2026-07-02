@@ -3,9 +3,15 @@
 import type { Task } from "@/lib/types";
 
 const priorityColors = {
-  low: "text-zinc-400 bg-zinc-400/10",
-  medium: "text-yellow-400 bg-yellow-400/10",
-  high: "text-red-400 bg-red-400/10",
+  low: "text-zinc-400 bg-zinc-400/10 border-zinc-400/20",
+  medium: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
+  high: "text-red-400 bg-red-400/10 border-red-400/20",
+};
+
+const priorityIcons = {
+  low: "↓",
+  medium: "→",
+  high: "↑",
 };
 
 export default function TaskBoard({ tasks }: { tasks: Task[] }) {
@@ -15,9 +21,14 @@ export default function TaskBoard({ tasks }: { tasks: Task[] }) {
   return (
     <div className="flex flex-col h-full">
       <div className="px-4 py-3 border-b border-[var(--border)]">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-          Task Board
-        </h2>
+        <div className="flex items-center gap-2">
+          <svg className="w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
+            Task Board
+          </h2>
+        </div>
         <p className="text-xs text-zinc-500 mt-0.5">
           {pending.length} active · {done.length} done
         </p>
@@ -25,9 +36,15 @@ export default function TaskBoard({ tasks }: { tasks: Task[] }) {
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {pending.length === 0 && done.length === 0 && (
-          <p className="text-sm text-zinc-500 text-center py-8">
-            No tasks yet. Ask the agent to add some!
-          </p>
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="w-12 h-12 rounded-xl bg-zinc-800/50 border border-[var(--border)] flex items-center justify-center mb-3">
+              <svg className="w-6 h-6 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+            <p className="text-sm text-zinc-400 font-medium">No tasks yet</p>
+            <p className="text-xs text-zinc-600 mt-1">Ask the agent to add some!</p>
+          </div>
         )}
 
         {pending.length > 0 && (
@@ -59,7 +76,7 @@ export default function TaskBoard({ tasks }: { tasks: Task[] }) {
 function TaskCard({ task }: { task: Task }) {
   return (
     <li
-      className={`rounded-lg border border-[var(--border)] bg-[var(--panel)] p-3 animate-fade-in ${
+      className={`group rounded-lg border border-[var(--border)] bg-[var(--panel)] p-3 animate-fade-in transition-all duration-200 hover:border-[var(--accent)]/30 hover:shadow-lg hover:shadow-[var(--accent)]/5 ${
         task.completed ? "opacity-60" : ""
       }`}
     >
@@ -86,10 +103,11 @@ function TaskCard({ task }: { task: Task }) {
           )}
           <div className="flex items-center gap-2 mt-1.5">
             <span
-              className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
+              className={`inline-flex items-center gap-0.5 text-[10px] font-medium px-1.5 py-0.5 rounded border ${
                 priorityColors[task.priority]
               }`}
             >
+              <span>{priorityIcons[task.priority]}</span>
               {task.priority}
             </span>
             <span className="text-[10px] text-zinc-600">#{task.id}</span>
