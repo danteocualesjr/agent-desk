@@ -86,10 +86,16 @@ export default function ChatPanel({
         ))}
 
         {loading && (
-          <div className="animate-fade-in">
-            <div className="inline-flex items-center gap-2 bg-[var(--panel)] border border-[var(--border)] rounded-lg px-3 py-2 text-sm text-zinc-400">
-              <span className="inline-block w-1.5 h-1.5 bg-[var(--accent)] rounded-full animate-pulse" />
-              Agent is thinking...
+          <div className="animate-fade-in flex gap-2">
+            <div className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold bg-zinc-800 text-zinc-400 border border-[var(--border)]">
+              AI
+            </div>
+            <div className="inline-flex items-center gap-2 bg-[var(--panel)] border border-[var(--border)] rounded-xl rounded-tl-sm px-4 py-3 text-sm text-zinc-400">
+              <span className="flex gap-1">
+                <span className="typing-dot inline-block w-1.5 h-1.5 bg-zinc-500 rounded-full" />
+                <span className="typing-dot inline-block w-1.5 h-1.5 bg-zinc-500 rounded-full" />
+                <span className="typing-dot inline-block w-1.5 h-1.5 bg-zinc-500 rounded-full" />
+              </span>
             </div>
           </div>
         )}
