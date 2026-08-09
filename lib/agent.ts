@@ -88,6 +88,23 @@ export const TOOL_DEFINITIONS: Anthropic.Tool[] = [
   },
 ];
 
+const VALID_PRIORITIES = new Set(["low", "medium", "high"]);
+
+function parsePriority(value: unknown): "low" | "medium" | "high" | undefined {
+  if (typeof value !== "string" || !VALID_PRIORITIES.has(value)) {
+    return undefined;
+  }
+  return value as "low" | "medium" | "high";
+}
+
+function requireTaskId(input: Record<string, unknown>): string | { error: string } {
+  const id = input.id;
+  if (typeof id !== "string" || !id.trim()) {
+    return { error: "id is required" };
+  }
+  return id;
+}
+
 function executeTool(
   name: string,
   input: Record<string, unknown>
@@ -95,22 +112,63 @@ function executeTool(
   switch (name) {
     case "list_tasks":
       return getTasks();
-    case "add_task":
+    case "add_task": {
+      const title = input.title;
+      if (typeof title !== "string" || !title.trim()) {
+        return { error: "title is required" };
+      }
       return addTask(
-        input.title as string,
-        (input.priority as "low" | "medium" | "high") ?? "medium",
-        (input.notes as string) ?? ""
+        title.trim(),
+        parsePriority(input.priority) ?? "medium",
+        typeof input.notes === "string" ? input.notes : ""
       );
-    case "update_task":
-      return updateTask(input.id as string, {
-        title: input.title as string | undefined,
-        priority: input.priority as "low" | "medium" | "high" | undefined,
-        notes: input.notes as string | undefined,
-      });
-    case "complete_task":
-      return completeTask(input.id as string);
-    case "delete_task":
-      return deleteTask(input.id as string);
+    }
+    case "update_task": {
+      const id = requireTaskId(input);
+      if (typeof id !== "string") return id;
+
+      const updates: {
+        title?: string;
+        priority?: "low" | "medium" | "high";
+        notes?: string;
+      } = {};
+
+      if (input.title !== undefined) {
+        if (typeof input.title !== "string" || !input.title.trim()) {
+          return { error: "title must be a non-empty string" };
+        }
+        updates.title = input.title.trim();
+      }
+      if (input.priority !== undefined) {
+        const priority = parsePriority(input.priority);
+        if (!priority) {
+          return { error: "priority must be low, medium, or high" };
+        }
+        updates.priority = priority;
+      }
+      if (input.notes !== undefined) {
+        if (typeof input.notes !== "string") {
+          return { error: "notes must be a string" };
+        }
+        updates.notes = input.notes;
+      }
+
+      const task = updateTask(id, updates);
+      return task ?? { error: `Task not found: ${id}` };
+    }
+    case "complete_task": {
+      const id = requireTaskId(input);
+      if (typeof id !== "string") return id;
+      const task = completeTask(id);
+      return task ?? { error: `Task not found: ${id}` };
+    }
+    case "delete_task": {
+      const id = requireTaskId(input);
+      if (typeof id !== "string") return id;
+      return deleteTask(id)
+        ? { success: true }
+        : { error: `Task not found: ${id}` };
+    }
     default:
       return { error: `Unknown tool: ${name}` };
   }
@@ -155,7 +213,7 @@ export async function runAgent(userMessage: string): Promise<AgentResponse> {
       reply = text;
     }
 
-    if (toolUseBlocks.length === 0 || response.stop_reason === "end_turn") {
+    if (toolUseBlocks.length === 0) {
       break;
     }
 

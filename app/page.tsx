@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import AgentTrace from "@/components/AgentTrace";
 import ChatPanel from "@/components/ChatPanel";
 import TaskBoard from "@/components/TaskBoard";
@@ -13,11 +13,19 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [stepCount, setStepCount] = useState(0);
+  const loadingRef = useRef(false);
 
   const fetchTasks = useCallback(async () => {
-    const res = await fetch("/api/tasks");
-    const data = await res.json();
-    setTasks(data.tasks);
+    try {
+      const res = await fetch("/api/tasks");
+      if (!res.ok) {
+        throw new Error("Failed to load tasks");
+      }
+      const data = await res.json();
+      setTasks(Array.isArray(data.tasks) ? data.tasks : []);
+    } catch {
+      setTasks([]);
+    }
   }, []);
 
   useEffect(() => {
@@ -25,10 +33,14 @@ export default function Home() {
   }, [fetchTasks]);
 
   async function handleSend(message: string) {
+    if (loadingRef.current) return;
+
+    loadingRef.current = true;
     setError(null);
     setMessages((prev) => [...prev, { role: "user", content: message }]);
     setLoading(true);
     setTrace([]);
+    setStepCount(0);
 
     try {
       const res = await fetch("/api/agent", {
@@ -45,11 +57,11 @@ export default function Home() {
 
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: data.reply },
+        { role: "assistant", content: data.reply ?? "Done." },
       ]);
-      setTrace(data.trace);
-      setTasks(data.tasks);
-      setStepCount(data.trace.length);
+      setTrace(Array.isArray(data.trace) ? data.trace : []);
+      setTasks(Array.isArray(data.tasks) ? data.tasks : []);
+      setStepCount(Array.isArray(data.trace) ? data.trace.length : 0);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Agent error";
       setError(msg);
@@ -58,6 +70,7 @@ export default function Home() {
         { role: "assistant", content: `Error: ${msg}` },
       ]);
     } finally {
+      loadingRef.current = false;
       setLoading(false);
     }
   }
