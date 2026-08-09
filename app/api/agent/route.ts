@@ -3,7 +3,17 @@ import { runAgent } from "@/lib/agent";
 
 export async function POST(request: Request) {
   try {
-    const { message } = await request.json();
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+
+    const message =
+      body && typeof body === "object" && "message" in body
+        ? (body as { message: unknown }).message
+        : undefined;
 
     if (!message || typeof message !== "string") {
       return NextResponse.json(
