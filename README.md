@@ -24,3 +24,4 @@ Open [http://localhost:3000](http://localhost:3000).
 - "Add tasks: write slides, rehearse demo, send calendar invite"
 - "What's on my plate?"
 - "Mark slides done and bump rehearsal to high priority"
+<!-- smoke-test: First Bot connectivity check, 2026-08-13 -->
